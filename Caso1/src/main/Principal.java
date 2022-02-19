@@ -28,8 +28,28 @@ public class Principal
 		}
 		
 		Proceso[] procesos = new Proceso[4];
-		System.out.println("Ingrese la cantidad de mensajes que se van a enviar:");
-		int nMensajes = in.nextInt();
+		int nMensajes = 0;
+		boolean sentinela = true;
+		while (sentinela)
+		{
+			System.out.println("Ingrese la cantidad de mensajes que se van a enviar:");
+			nMensajes = in.nextInt();
+			
+			if (nMensajes > Buzon.getTotalSize())
+			{
+				System.out.println("El valor ingresado excede la capacidad total de los buzones.");
+			}
+			
+			else if (nMensajes <= 0)
+			{
+				System.out.println("El valor ingresado no es valido.");
+			}
+			
+			else
+			{
+				sentinela = false;
+			}
+		}
 		ArrayList<Object> lstConfigP1 = (ArrayList<Object>) lstConfiguraciones.get(4);
 		procesos[0] = (Proceso)new ProcesoInicial(nMensajes, (int)lstConfigP1.get(0), (boolean)lstConfigP1.get(1), (boolean)lstConfigP1.get(2), buzones[3], buzones[0]);
 		
@@ -58,7 +78,7 @@ public class Principal
 			System.out.println();
 		}
 		*/
-		System.out.println("Todos los procesos han terminado su ejecución");
+		System.out.println("Todos los procesos han terminado su ejecución.");
 	}
 	
 	private static ArrayList<Object> cargarConfiguracion(File fileConfiguracion) throws IOException

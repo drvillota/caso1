@@ -29,4 +29,10 @@ public class Proceso extends Thread
 		System.out.println("bznEnvio: ");
 		bznEnvio.imprimirConfiguracion();
 	}
+	
+	@Override
+	public void run()
+	{
+		
+	}
 }
