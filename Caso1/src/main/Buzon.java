@@ -17,6 +17,58 @@ public class Buzon
 		lstMensajes = new ArrayList<Mensaje>();
 	}
 	
+	public synchronized void enviarPasivo(Mensaje i) {
+		while (lstMensajes.size() == size)
+		{
+			try 
+			{
+				wait();
+			} catch (InterruptedException e) 
+			{
+				e.printStackTrace();
+			}
+		}
+		lstMensajes.add(i);
+		notify();
+	}
+	
+	public synchronized void enviarActivo(Mensaje i) {
+		while (lstMensajes.size() == size)
+		{
+			
+		}
+		lstMensajes.add(i);
+		notify();
+	}
+	
+	public synchronized Mensaje recibirPasivo() 
+	{
+		while(lstMensajes.size() == 0)
+		{
+			try
+			{
+				wait();
+			} catch (InterruptedException e)
+			{
+				e.printStackTrace();
+			}
+		}
+		Mensaje i = lstMensajes.remove (0);
+		notifyAll();
+		return i ;
+	}
+	
+	public synchronized Mensaje recibirActivo() 
+	{
+		while (lstMensajes.size() == 0)
+		{
+			
+		}
+		Mensaje i = lstMensajes.remove(0);
+		notifyAll();
+		return i;
+	}
+	
 	public static int getTotalSize()
 	{
 		return totalSize;
