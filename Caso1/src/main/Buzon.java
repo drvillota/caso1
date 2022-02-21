@@ -6,18 +6,30 @@ public class Buzon
 {
 	private int size;
 	private static int totalSize;
-	private int nMensajes;
 	private ArrayList<Mensaje> lstMensajes;
 	
 	public Buzon(int psize)
 	{
 		size = psize;
 		totalSize += psize;
-		nMensajes = 0;
 		lstMensajes = new ArrayList<Mensaje>();
 	}
 	
-	public synchronized void enviarPasivo(Mensaje i) {
+	public int inicializarCiclo(int nMensajes, boolean tipoRecepcion, boolean tipoEnvio)
+	{
+		while (lstMensajes.size() < size & nMensajes > 0)
+		{
+			synchronized (lstMensajes)
+			{
+				lstMensajes.add(new Mensaje(tipoRecepcion, tipoEnvio, false));
+				nMensajes--;
+			}
+		}
+		
+		return nMensajes;
+	}
+	
+	public void enviarPasivo(Mensaje i) {
 		while (lstMensajes.size() == size)
 		{
 			try 
@@ -28,20 +40,28 @@ public class Buzon
 				e.printStackTrace();
 			}
 		}
-		lstMensajes.add(i);
-		notify();
+		
+		synchronized (lstMensajes)
+		{
+			lstMensajes.add(i);
+		}
+		notifyAll();
 	}
 	
-	public synchronized void enviarActivo(Mensaje i) {
+	public void enviarActivo(Mensaje i) {
 		while (lstMensajes.size() == size)
 		{
 			
 		}
-		lstMensajes.add(i);
-		notify();
+		
+		synchronized (lstMensajes)
+		{
+			lstMensajes.add(i);
+		}
+		notifyAll();
 	}
 	
-	public synchronized Mensaje recibirPasivo() 
+	public Mensaje recibirPasivo() 
 	{
 		while(lstMensajes.size() == 0)
 		{
@@ -53,19 +73,33 @@ public class Buzon
 				e.printStackTrace();
 			}
 		}
-		Mensaje i = lstMensajes.remove (0);
+		
+		Mensaje i;
+		synchronized (lstMensajes)
+		{
+			i = lstMensajes.remove (0);
+		}
+		
 		notifyAll();
-		return i ;
+		
+		return i;
 	}
 	
-	public synchronized Mensaje recibirActivo() 
+	public Mensaje recibirActivo() 
 	{
 		while (lstMensajes.size() == 0)
 		{
 			
 		}
-		Mensaje i = lstMensajes.remove(0);
+		
+		Mensaje i;
+		synchronized (lstMensajes)
+		{
+			i = lstMensajes.remove(0);
+		}
+		
 		notifyAll();
+		
 		return i;
 	}
 	
@@ -77,7 +111,7 @@ public class Buzon
 	public void imprimirConfiguracion()
 	{
 		System.out.println("size: " + size);
-		System.out.println("nMensajes: " + nMensajes);
+		System.out.println("nMensajes: " + lstMensajes.size());
 	}
 	
 	public void imprimirMensajes()

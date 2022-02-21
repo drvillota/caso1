@@ -51,14 +51,14 @@ public class Principal
 			}
 		}
 		ArrayList<Object> lstConfigP1 = (ArrayList<Object>) lstConfiguraciones.get(4);
-		procesos[0] = (Proceso)new ProcesoInicial(nMensajes, (int)lstConfigP1.get(0), (boolean)lstConfigP1.get(1), (boolean)lstConfigP1.get(2), buzones[3], buzones[0]);
+		procesos[0] = (Proceso)new ProcesoInicial(1, nMensajes, (int)lstConfigP1.get(0), (boolean)lstConfigP1.get(1), (boolean)lstConfigP1.get(2), buzones[3], buzones[0]);
 		
 		i++;
 		int j = 1;
 		while (i < 8 & j < 4)
 		{
 			ArrayList<Object> lstConfig = (ArrayList<Object>) lstConfiguraciones.get(i); //5
-			procesos[j] = new Proceso((int)lstConfig.get(0), (boolean)lstConfig.get(1), (boolean)lstConfig.get(2), buzones[j-1], buzones[j]);
+			procesos[j] = new Proceso(j+1, (int)lstConfig.get(0), (boolean)lstConfig.get(1), (boolean)lstConfig.get(2), buzones[j-1], buzones[j]);
 			procesos[j].start();
 			i++;
 			j++;
