@@ -21,7 +21,7 @@ public class ProcesoInicial extends Proceso
 		{
 			Mensaje mensaje = bznRetiro.recibirActivo();
 			
-			System.out.println("Mensaje " + indiceMensaje + ": " + mensaje);
+			System.out.println("Mensaje " + indiceMensaje + ": " + mensaje.getTexto());
 			indiceMensaje++;
 			
 			if (mensaje.getTexto().equals("FIN"))
@@ -78,7 +78,7 @@ public class ProcesoInicial extends Proceso
 		{
 			Mensaje mensaje = bznRetiro.recibirPasivo();
 			
-			System.out.println("Mensaje " + indiceMensaje + ": " + mensaje);
+			System.out.println("Mensaje " + indiceMensaje + ": " + mensaje.getTexto());
 			indiceMensaje++;
 			
 			if (mensaje.getTexto().equals("FIN"))
@@ -107,7 +107,7 @@ public class ProcesoInicial extends Proceso
 		{
 			Mensaje mensaje = bznRetiro.recibirPasivo();
 			
-			System.out.println("Mensaje " + indiceMensaje + ": " + mensaje);
+			System.out.println("Mensaje " + indiceMensaje + ": " + mensaje.getTexto());
 			indiceMensaje++;
 			
 			if (mensaje.getTexto().equals("FIN"))
