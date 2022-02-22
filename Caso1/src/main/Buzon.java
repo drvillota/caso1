@@ -18,10 +18,11 @@ public class Buzon
 	public int inicializarCiclo(int nMensajes, boolean tipoRecepcion, boolean tipoEnvio)
 	{
 		while (lstMensajes.size() < size & nMensajes > 0)
-		{
+		{	
 			synchronized (lstMensajes)
 			{
-				lstMensajes.add(new Mensaje(tipoRecepcion, tipoEnvio, false));
+				Mensaje m = new Mensaje(tipoRecepcion, tipoEnvio, false);
+				lstMensajes.add(m);
 				nMensajes--;
 			}
 		}
@@ -30,95 +31,93 @@ public class Buzon
 	}
 	
 	public void enviarPasivo(Mensaje i) {
-		while (lstMensajes.size() == size)
-		{
-			try 
-			{
-				wait();
-			} catch (InterruptedException e) 
-			{
-				e.printStackTrace();
-			}
-		}
-		
 		synchronized (lstMensajes)
 		{
+			while (lstMensajes.size() == size)
+			{
+				try 
+				{
+					lstMensajes.wait();
+				} catch (InterruptedException e) 
+				{
+					e.printStackTrace();
+				}
+			}
+		
 			lstMensajes.add(i);
+			
+			lstMensajes.notifyAll();
 		}
-		notifyAll();
 	}
 	
 	public void enviarActivo(Mensaje i) {
 		while (lstMensajes.size() == size)
 		{
-			
+			Thread.yield();
 		}
 		
 		synchronized (lstMensajes)
 		{
 			lstMensajes.add(i);
+			
+			lstMensajes.notifyAll();
 		}
-		notifyAll();
 	}
 	
 	public Mensaje recibirPasivo() 
 	{
-		while(lstMensajes.size() == 0)
-		{
-			try
-			{
-				wait();
-			} catch (InterruptedException e)
-			{
-				e.printStackTrace();
-			}
-		}
-		
 		Mensaje i;
 		synchronized (lstMensajes)
 		{
-			i = lstMensajes.remove (0);
-		}
+			while(lstMensajes.size() == 0)
+			{
+				try
+				{
+					lstMensajes.wait();
+				} catch (InterruptedException e)
+				{
+					e.printStackTrace();
+				}
+			}
 		
-		notifyAll();
+			i = lstMensajes.remove (0);
+			
+			lstMensajes.notifyAll();
+		}
 		
 		return i;
 	}
 	
 	public Mensaje recibirActivo() 
 	{
-		while (lstMensajes.size() == 0)
+		Mensaje i;
+		while (lstMensajes.isEmpty())
 		{
-			
+			Thread.yield();
 		}
 		
-		Mensaje i;
 		synchronized (lstMensajes)
 		{
 			i = lstMensajes.remove(0);
+		
+			lstMensajes.notifyAll();
+			
+			return i;
 		}
-		
-		notifyAll();
-		
-		return i;
 	}
 	
 	public static int getTotalSize()
 	{
 		return totalSize;
 	}
-	
-	public void imprimirConfiguracion()
+
+	public ArrayList<Mensaje> getLstMensajes()
 	{
-		System.out.println("size: " + size);
-		System.out.println("nMensajes: " + lstMensajes.size());
+		return lstMensajes;
 	}
 	
-	public void imprimirMensajes()
+	public int getSize()
 	{
-		for (int i=0; i<lstMensajes.size(); i++)
-		{
-			System.out.println("Mensje " + i + ":" + lstMensajes.get(i));
-		}
+		return size;
 	}
 }

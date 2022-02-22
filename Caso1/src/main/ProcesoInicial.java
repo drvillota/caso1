@@ -1,22 +1,17 @@
 package main;
 
+import java.util.concurrent.CyclicBarrier;
+
 public class ProcesoInicial extends Proceso
 {
 	private int nMensajes;
 	private int indiceMensaje;
 	
-	public ProcesoInicial(int pid, int pnMensajes, int ptEspera, boolean ptipoEnvio, boolean ptipoRecepcion, Buzon pbznRetiro, Buzon pbznEnvio)
+	public ProcesoInicial(CyclicBarrier pbarrera, int pid, int pnMensajes, int ptEspera, boolean ptipoEnvio, boolean ptipoRecepcion, Buzon pbznRetiro, Buzon pbznEnvio)
 	{
-		super(pid, ptEspera, ptipoEnvio, ptipoRecepcion, pbznRetiro, pbznEnvio);
+		super(pbarrera, pid, ptEspera, ptipoEnvio, ptipoRecepcion, pbznRetiro, pbznEnvio);
 		nMensajes = pnMensajes;
 		indiceMensaje = 1;
-	}
-	
-	@Override
-	public void imprimirConfiguracion()
-	{
-		System.out.println("nMensajes a Enviar: " + nMensajes);
-		super.imprimirConfiguracion();
 	}
 	
 	@Override
@@ -29,7 +24,7 @@ public class ProcesoInicial extends Proceso
 			System.out.println("Mensaje " + indiceMensaje + ": " + mensaje);
 			indiceMensaje++;
 			
-			if (mensaje.getTexto() == "FIN")
+			if (mensaje.getTexto().equals("FIN"))
 			{
 				estado = false;
 			}
@@ -54,11 +49,10 @@ public class ProcesoInicial extends Proceso
 		while (estado)
 		{
 			Mensaje mensaje = bznRetiro.recibirActivo();
-			
-			System.out.println("Mensaje " + indiceMensaje + ": " + mensaje);
+			System.out.println("Mensaje " + indiceMensaje + ": " + mensaje.getTexto());
 			indiceMensaje++;
 			
-			if (mensaje.getTexto() == "FIN")
+			if (mensaje.getTexto().equals("FIN"))
 			{
 				estado = false;
 			}
@@ -87,7 +81,7 @@ public class ProcesoInicial extends Proceso
 			System.out.println("Mensaje " + indiceMensaje + ": " + mensaje);
 			indiceMensaje++;
 			
-			if (mensaje.getTexto() == "FIN")
+			if (mensaje.getTexto().equals("FIN"))
 			{
 				estado = false;
 			}
@@ -116,7 +110,7 @@ public class ProcesoInicial extends Proceso
 			System.out.println("Mensaje " + indiceMensaje + ": " + mensaje);
 			indiceMensaje++;
 			
-			if (mensaje.getTexto() == "FIN")
+			if (mensaje.getTexto().equals("FIN"))
 			{
 				estado = false;
 			}

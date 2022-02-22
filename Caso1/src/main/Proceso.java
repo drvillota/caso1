@@ -1,5 +1,8 @@
 package main;
 
+import java.util.concurrent.BrokenBarrierException;
+import java.util.concurrent.CyclicBarrier;
+
 public class Proceso extends Thread
 {
 	protected int id;
@@ -9,28 +12,17 @@ public class Proceso extends Thread
 	protected Buzon bznRetiro;
 	protected Buzon bznEnvio;
 	protected boolean estado = true;
+	protected CyclicBarrier barrera;
 	
-	public Proceso(int pid, int ptEspera, boolean ptipoEnvio, boolean ptipoRecepcion, Buzon pbznRetiro, Buzon pbznEnvio)
+	public Proceso(CyclicBarrier pbarrera, int pid, int ptEspera, boolean ptipoEnvio, boolean ptipoRecepcion, Buzon pbznRetiro, Buzon pbznEnvio)
 	{
+		barrera = pbarrera;
 		id = pid;
 		tEspera = ptEspera;
 		tipoEnvio = ptipoEnvio;
 		tipoRecepcion = ptipoRecepcion;
 		bznRetiro = pbznRetiro;
 		bznEnvio = pbznEnvio;
-	}
-
-	public void imprimirConfiguracion()
-	{
-		System.out.println("id: " + id);
-		System.out.println(tEspera);
-		System.out.println(tipoEnvio);
-		System.out.println(tipoRecepcion);
-		
-		System.out.println("bznRetiro: ");
-		bznRetiro.imprimirConfiguracion();
-		System.out.println("bznEnvio: ");
-		bznEnvio.imprimirConfiguracion();
 	}
 	
 	protected void cicloActivoActivo()
@@ -39,7 +31,7 @@ public class Proceso extends Thread
 		{
 			Mensaje mensaje = bznRetiro.recibirActivo();
 			
-			if (mensaje.getTexto() == "FIN")
+			if (mensaje.getTexto().equals("FIN"))
 			{
 				estado = false;
 			}
@@ -66,7 +58,7 @@ public class Proceso extends Thread
 		{
 			Mensaje mensaje = bznRetiro.recibirActivo();
 			
-			if (mensaje.getTexto() == "FIN")
+			if (mensaje.getTexto().equals("FIN"))
 			{
 				estado = false;
 			}
@@ -93,7 +85,7 @@ public class Proceso extends Thread
 		{
 			Mensaje mensaje = bznRetiro.recibirPasivo();
 			
-			if (mensaje.getTexto() == "FIN")
+			if (mensaje.getTexto().equals("FIN"))
 			{
 				estado = false;
 			}
@@ -120,7 +112,7 @@ public class Proceso extends Thread
 		{
 			Mensaje mensaje = bznRetiro.recibirPasivo();
 			
-			if (mensaje.getTexto() == "FIN")
+			if (mensaje.getTexto().equals("FIN"))
 			{
 				estado = false;
 			}
@@ -144,6 +136,16 @@ public class Proceso extends Thread
 	@Override
 	public void run()
 	{
+		try
+		{
+			barrera.await();
+		} catch (InterruptedException e)
+		{
+			e.printStackTrace();
+		} catch (BrokenBarrierException e)
+		{
+			e.printStackTrace();
+		}
 		if (tipoRecepcion & tipoEnvio)
 		{
 			cicloActivoActivo();

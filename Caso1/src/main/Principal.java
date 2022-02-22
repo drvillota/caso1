@@ -6,6 +6,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.concurrent.CyclicBarrier;
 
 public class Principal
 {
@@ -50,15 +51,19 @@ public class Principal
 				sentinela = false;
 			}
 		}
+		
+		CyclicBarrier barrera = new CyclicBarrier(4);
+		
 		ArrayList<Object> lstConfigP1 = (ArrayList<Object>) lstConfiguraciones.get(4);
-		procesos[0] = (Proceso)new ProcesoInicial(1, nMensajes, (int)lstConfigP1.get(0), (boolean)lstConfigP1.get(1), (boolean)lstConfigP1.get(2), buzones[3], buzones[0]);
+		procesos[0] = (Proceso)new ProcesoInicial(barrera, 1, nMensajes, (int)lstConfigP1.get(0), (boolean)lstConfigP1.get(2), (boolean)lstConfigP1.get(1), buzones[3], buzones[0]);
+		procesos[0].start();
 		
 		i++;
 		int j = 1;
 		while (i < 8 & j < 4)
 		{
 			ArrayList<Object> lstConfig = (ArrayList<Object>) lstConfiguraciones.get(i); //5
-			procesos[j] = new Proceso(j+1, (int)lstConfig.get(0), (boolean)lstConfig.get(1), (boolean)lstConfig.get(2), buzones[j-1], buzones[j]);
+			procesos[j] = new Proceso(barrera, j+1, (int)lstConfig.get(0), (boolean)lstConfig.get(2), (boolean)lstConfig.get(1), buzones[j-1], buzones[j]);
 			procesos[j].start();
 			i++;
 			j++;
@@ -69,15 +74,6 @@ public class Principal
 			procesos[k].join();
 		}
 		
-		//TODO
-		//Loop para imprimir info de threads y sus configuraciones y buzones
-		/*
-		for (int w=0; w<procesos.length; w++)
-		{
-			procesos[w].imprimirConfiguracion();
-			System.out.println();
-		}
-		*/
 		System.out.println("Todos los procesos han terminado su ejecución.");
 	}
 	

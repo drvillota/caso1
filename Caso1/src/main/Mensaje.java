@@ -3,9 +3,12 @@ package main;
 public class Mensaje
 {
 	private String texto;
+	private int id;
+	private static int contadorMensajes = 0;
 	
 	public Mensaje(boolean tipoRecepcion, boolean tipoEnvio, boolean mensajeFinal)
 	{
+		id += contadorMensajes++;
 		texto = "";
 		
 		if (!mensajeFinal)
@@ -44,5 +47,10 @@ public class Mensaje
 	public String getTexto()
 	{
 		return texto;
+	}
+
+	public int getId()
+	{
+		return id;
 	}
 }
