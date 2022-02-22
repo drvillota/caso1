@@ -1,0 +1,8 @@
+A 7
+B 1
+C 3
+D 6
+1 30 true false
+2 50 false true 
+3 50 true true 
+4 10 false true 
